@@ -6,15 +6,36 @@
 #include "carte.h"
 
 void Carte::ajouter_noeud(long osmid, const Point& p){
-    // À coder.
+    
+    noeuds[ osmid ] = Noeud(osmid, p);
 }
 
-void Carte::ajouter_route(const string& nom, const list<long>& noeuds){
-    // À coder.
+void Carte::ajouter_route(const string& nom, const list<long>& n){
+    
+    if( n.size() == 0 ) return;
+    
+    // ON SAUVE LA ROUTE AVEC SON NOM POUR L'AFFICHER À LA FIN
+    routes[nom] = n;
+    
+    // ON CRÉE LES ARÊTES
+    std::list<long>::const_iterator itr_src = n.begin();
+    std::list<long>::const_iterator itr_dest = n.begin();
+    itr_dest++;
+    while( itr_dest != n.end()){
+        
+        Noeud& source = noeuds[*itr_src];
+        Noeud::Arete arete;
+        arete.dest = &noeuds[*itr_dest];
+        arete.poids = source.p.distance(arete.dest->p);
+        source.aretes.push_back(arete);
+        itr_src++;
+        itr_dest++;
+    }
+    
 }
 
 void Carte::ajouter_cafe(const string& nom, const Point& p){
-    // À coder.
+    
 }
 
 double Carte::calculer_chemin(const Point& a, const Point& b, list<Point>& chemin) const{

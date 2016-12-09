@@ -9,6 +9,7 @@
 
 class Point {
   public:
+    Point& operator = (const Point& point){ longitude = point.longitude; latitude = point.latitude; return *this; }
     double distance(const Point&) const;
   private:
     double latitude;

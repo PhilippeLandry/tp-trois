@@ -9,35 +9,6 @@
 #define RAYONTERRE 6371000  // en mètres
 #define PI 3.14159265359
 
-
-
-
-/*
-//  DIJKSTRA mLog(n) mais avec priority_queue<X>, ça donne mLog(m)
- class X {
-    string nom_parent
- ;
-    double distance;
-    operator <(...) // attention: distances négatives,
- // Aussi: aulieu de réduire la clef, inserer
- }
- DIJKSTRA(G=(V,E),s∈V) pourtoutv∈V
-    distances[v] ← +∞
-    parents[v] ← indéfini
-    distances[s] ← 0
-    Q ← créer FilePrioritaire(V )
-    tant que ¬Q.vide()
-        v ← Enlever v ∈ Q avec la plus petite valeur distances[v
-        si distances[v] = +∞ break
-        pour toute arête sortante e = (v, w) depuis le sommet v
-        d ← distances[v] + e.distance
-        si d < distances[w]
-            parents[w] ← v
-            distances[w] ← d
-            Q.RéduireClé(w) // ou Q.insérer(w)
- retourner (distances, parents)
- 
- */
 double Point::distance(const Point& point) const {
   double s1 = sin((point.latitude-latitude)/2);
   double s2 = sin((point.longitude-longitude)/2);

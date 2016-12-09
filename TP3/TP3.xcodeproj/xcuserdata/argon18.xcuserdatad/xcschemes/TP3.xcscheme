@@ -71,7 +71,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/argon18/Library/Mobile Documents/com~apple~CloudDocs/UQAM/INF3105/tp-trois/TP3/uqam-req0.txt"
+            argument = "/Users/argon18/Library/Mobile\ Documents/com~apple~CloudDocs/UQAM/INF3105/tp-trois/TP3/uqam-req0.txt"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
