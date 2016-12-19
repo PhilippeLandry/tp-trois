@@ -26,33 +26,18 @@ using namespace std;
 
 void foo()
 {
-    std::cout << "foo" << endl;
+    //std::cout << "foo" << endl;
 }
 
-void bar(int x)
+void bar(double x, double y)
 {
-    std::cout << "bar" << endl;
+    std::cout << "bar:" << x << ":" << y << endl;
 }
 
 int main(int argc, const char** argv){
     
     
-    
-    /*
-    std::thread first (foo);     // spawn new thread that calls foo()
-    std::thread second (bar,0);  // spawn new thread that calls bar(0)
-    
-    std::cout << "main, foo and bar now execute concurrently...\n";
-    
-    // synchronize threads:
-    first.join();                // pauses until first finishes
-    second.join();               // pauses until second finishes
-    
-    std::cout << "foo and bar completed.\n";
-    
-    return 0;
-    */
-    
+  
     
     
     if(argc<4){

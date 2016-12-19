@@ -9,7 +9,7 @@
 #include <list>
 #include <map>
 #include <unordered_map>
-#include <set>
+#include <vector>
 #include <string>
 #include "point.h"
 using namespace std;
@@ -22,6 +22,7 @@ class Carte{
         Noeud( const Noeud& noeud): osmid(noeud.osmid) , p(noeud.p){}
         Noeud& operator = (const Noeud& noeud){ osmid = noeud.osmid; p = noeud.p; return *this; }
         Noeud( const long& osmid , const Point& p): osmid(osmid) , p(p){}
+    
         long osmid;
         Point p;
         
@@ -30,6 +31,8 @@ class Carte{
             long poids;
         };
         list<Arete> aretes;
+        bool iscafe;
+        string nom;
         
     };
   public:
@@ -43,6 +46,7 @@ class Carte{
   private:
     unordered_map<long, Noeud> noeuds;
     unordered_map<string, list<long>> routes;
+    vector<long> cafes;
   friend istream& operator >> (istream& is, Carte& carte);
 };
 

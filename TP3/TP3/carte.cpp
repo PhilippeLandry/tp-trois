@@ -35,10 +35,47 @@ void Carte::ajouter_route(const string& nom, const list<long>& n){
 }
 
 void Carte::ajouter_cafe(const string& nom, const Point& p){
+    // ON CHERCHE LE NOEUDS LE PLUS PRET DU CAFÉ
+    double min =  std::numeric_limits<double>::infinity();
+    long noeud;
+    for( std::unordered_map<long, Noeud>::const_iterator it = this->noeuds.begin(); it != this->noeuds.end(); it++ ){
+        double d = it->second.p.distance(p);
+        if( d < min ){
+            min = d;
+            noeud = it->second.osmid;
+        }
+    }
+    
+    noeuds[noeud].iscafe = true;
+    noeuds[noeud].nom = nom;
+    cafes.push_back(noeud);
     
 }
 
 double Carte::calculer_chemin(const Point& a, const Point& b, list<Point>& chemin) const{
+    
+    // ON CHERCHE LES DEUX NOEUDS LES PLUS PRETS DE CHAQUE AMOUREUX
+    double min1 =  std::numeric_limits<double>::infinity();
+    double min2 =  std::numeric_limits<double>::infinity();
+    long noeud1, noeud2;
+    
+    for( std::unordered_map<long, Noeud>::const_iterator it = this->noeuds.begin(); it != this->noeuds.end(); it++ ){
+        double d1 = it->second.p.distance(a);
+        if( d1 < min1 ){
+            min1 = d1;
+            noeud1 = it->second.osmid;
+        }
+        double d2 = it->second.p.distance(b);
+        if( d2 < min2 ){
+            min2 = d2;
+            noeud2 = it->second.osmid;
+        }
+    }
+    
+     
+    
+    
+    
     // À coder.
     // En principe, l'algorithme de Dijkstra.
     return numeric_limits<double>::infinity();
