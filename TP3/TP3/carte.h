@@ -22,13 +22,13 @@ class Carte{
         Noeud( const Noeud& noeud): osmid(noeud.osmid) , p(noeud.p){}
         Noeud& operator = (const Noeud& noeud){ osmid = noeud.osmid; p = noeud.p; return *this; }
         Noeud( const long& osmid , const Point& p): osmid(osmid) , p(p){}
-    
+        
         long osmid;
         Point p;
         
         struct Arete {
             Noeud* dest;
-            long poids;
+            double poids;
         };
         list<Arete> aretes;
         bool iscafe;
@@ -43,10 +43,21 @@ class Carte{
     double calculer_chemin(const Point& a, const Point& b, list<Point>& chemin) const;
     string suggerer_lieu_rencontre(const Point& membre1, const Point& membre2, double& d1, double& d2, list<Point>& chemin1, list<Point>& chemin2) const;
 
+    struct DijsktraResult {
+        long parent;
+        double distance;
+        DijsktraResult( const long& parent, const double& distance ) : parent(parent) , distance(distance){}
+        DijsktraResult( const DijsktraResult& source ) : parent(source.parent) , distance(source.distance){}
+        DijsktraResult(){}
+        DijsktraResult& operator = (const DijsktraResult& source){ parent = source.parent; distance = source.distance; return *this; }
+    };
+    unordered_map<long, DijsktraResult> dijsktra( long source ) const;
   private:
+   
+    
     unordered_map<long, Noeud> noeuds;
     unordered_map<string, list<long>> routes;
-    vector<long> cafes;
+    list<long> cafes;
   friend istream& operator >> (istream& is, Carte& carte);
 };
 
