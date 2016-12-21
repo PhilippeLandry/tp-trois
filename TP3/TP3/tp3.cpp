@@ -24,15 +24,6 @@
 #include <thread>
 using namespace std;
 
-void foo()
-{
-    //std::cout << "foo" << endl;
-}
-
-void bar(double x, double y)
-{
-    std::cout << "bar:" << x << ":" << y << endl;
-}
 
 int main(int argc, const char** argv){
     

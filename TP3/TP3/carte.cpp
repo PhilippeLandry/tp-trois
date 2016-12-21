@@ -5,7 +5,7 @@
 #include <limits>
 #include "carte.h"
 #include <queue>
-
+#include <stack>
 
 void Carte::ajouter_noeud(long osmid, const Point& p){
     
@@ -163,10 +163,12 @@ double Carte::calculer_chemin(const Point& a, const Point& b, list<Point>& chemi
     long result = -1;
     for( itr = cafes.begin(); itr != cafes.end(); itr++ ){
         long cafe = *itr;
+        
         double d1 = distances1[cafe].distance;
         double d2 = distances2[cafe].distance;
         double d = max( d1 , d2);
         if( d < distance ){
+            //if( distance == 0 ){ continue; }
             distance = d;
             result = cafe;
         }
@@ -174,8 +176,48 @@ double Carte::calculer_chemin(const Point& a, const Point& b, list<Point>& chemi
     }
     
     
-    // ON A TROUVÉ LE CAFÉ LE PLUS ADÉQUAT
-    cout << "café : " << result << " à " << distance << endl;
+    // ON AFFICHE LE NOM DU CAFÉ
+    cout <<  noeuds.at(result).nom << endl;
+    
+    // ON AFFICHE LES DISTANCES
+    cout << round(distances1[result].distance) << "m " << round(distances2[result].distance) << "m " << endl;
+    
+    // ON AFFICE LE CHEMIN 1
+    
+    std::stack<long> chemin1;
+    chemin1.push(result);
+    DijsktraResult noeud = distances1[result];
+    long parent = noeud.parent;
+    while(true ) {
+        noeud = distances1[parent];
+        if( noeud.parent == -1 ){ break; }
+        chemin1.push(noeud.parent);
+        parent = noeud.parent;
+    }
+    while( !chemin1.empty()){
+        long top = chemin1.top();
+        cout << noeuds.at(top).p << " ";
+        chemin1.pop();
+    }
+    cout << endl;
+    
+    
+    std::stack<long> chemin2;
+    chemin2.push(result);
+    noeud = distances2[result];
+    parent = noeud.parent;
+    while(true ) {
+        noeud = distances2[parent];
+        if( noeud.parent == -1 ){ break; }
+        chemin2.push(noeud.parent);
+        parent = noeud.parent;
+    }
+    while( !chemin2.empty()){
+        long top = chemin2.top();
+        cout << noeuds.at(top).p << " ";
+        chemin2.pop();
+    }
+    cout << endl;
     
     return distance;
 }
