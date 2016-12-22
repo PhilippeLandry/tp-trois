@@ -129,14 +129,14 @@ int main(int argc, const char** argv){
         // Affichage du résultat
         cout << cafe_suggeree << endl;
         if(d1 < numeric_limits<double>::infinity() && d2 < numeric_limits<double>::infinity())
-            cout << (int) round(d1) << "m\t" << (int) round(d2) << "m" << endl;
+            cout << (int) round(d1) << "m " << (int) round(d2) << "m" << endl;
         else
             cout << endl;
         for(list<Point>::iterator iter = chemin1.begin();iter!=chemin1.end();++iter)
-            cout << *iter << '\t';
+            cout << *iter << ' ';
         cout << endl;
         for(list<Point>::iterator iter = chemin2.begin();iter!=chemin2.end();++iter)
-            cout << *iter << '\t';
+            cout << *iter << ' ';
         cout << endl;
     }
     
