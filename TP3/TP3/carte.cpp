@@ -45,26 +45,28 @@ void Carte::ajouter_route(const string& nom, const list<long>& n){
     
 }
 
+// L'object qui sera placé dans le monceau de Dijsktra
+class Element {
+public:
+    Element( const double& distance, const long& noeud ) : distance(distance), noeud(noeud){}
+    Element(){}
+    Element(const Element& source) : noeud(source.noeud), distance( source.distance){}
+    long getNoeud() const { return noeud; }
+    double getDistance() const { return distance; }
+    bool operator < (const Element& o) const { return distance > o.distance; }
+    bool operator > (const Element& o) const { return distance < o.distance; }
+private:
+    long noeud;
+    double distance;
+    long parent;
+    
+    
+};
+
 map<long, Carte::DijsktraResult>
 Carte::dijsktra(long source) const{
     
-    // L'object qui sera placé dans le monceau de Dijsktra
-    class Element {
-    public:
-        Element( const double& distance, const long& noeud ) : distance(distance), noeud(noeud){}
-        Element(){}
-        Element(const Element& source) : noeud(source.noeud), distance( source.distance){}
-        long getNoeud() const { return noeud; }
-        double getDistance() const { return distance; }
-        bool operator < (const Element& o) const { return distance > o.distance; }
-        bool operator > (const Element& o) const { return distance < o.distance; }
-    private:
-        long noeud;
-        double distance;
-        long parent;
-        
-        
-    };
+    
     
     // ON CRÉER LE MONCEAU DE DISTANCES
     priority_queue<Element> monceau;
