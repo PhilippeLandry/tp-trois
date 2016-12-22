@@ -31,7 +31,7 @@ int main(int argc, const char** argv){
     
     
     
-    if(argc<4){
+    if(argc<3){
         cout << "./tp3 carte.txt cafes.txt requetes.txt" << endl;
         return 1;
     }
