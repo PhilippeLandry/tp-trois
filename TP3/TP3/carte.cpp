@@ -26,10 +26,19 @@ void Carte::ajouter_route(const string& nom, const list<long>& n){
     while( itr_dest != n.end()){
         
         Noeud& source = noeuds[*itr_src];
-        Noeud::Arete arete;
-        arete.dest = &noeuds[*itr_dest];
-        arete.poids = source.p.distance(arete.dest->p);
-        source.aretes.push_back(arete);
+        Noeud& dest = noeuds[*itr_dest];
+        Noeud::Arete arete1;
+        arete1.dest = &dest;
+        arete1.poids = source.p.distance(arete1.dest->p);
+        source.aretes.push_back(arete1);
+
+        Noeud::Arete arete2;
+        arete2.dest = &source;
+        arete2.poids = dest.p.distance(arete2.dest->p);
+        dest.aretes.push_back(arete2);
+
+        
+        
         itr_src++;
         itr_dest++;
     }
@@ -100,15 +109,6 @@ Carte::dijsktra(long source) const{
     
     
 
-    // ON INITIALISE LE MONCEAU DE DISTANCES À LA SOURCE AVEC UNE DISTANCE DE 0
-    // monceau_distances.push = source;
-    
-    
-    // ON BOUCLE SUR LE MONCEAU DE DISTANCE
-/*    while( !monceau_distances.empty() ){
-        
-    }*/
-    
     
     return distances;
 }
@@ -180,7 +180,7 @@ double Carte::calculer_chemin(const Point& a, const Point& b, list<Point>& chemi
     cout <<  noeuds.at(result).nom << endl;
     
     // ON AFFICHE LES DISTANCES
-    cout << round(distances1[result].distance) << "m " << round(distances2[result].distance) << "m " << endl;
+    cout << round(distances1[result].distance + min1) << "m " << round(distances2[result].distance + min2) << "m " << endl;
     
     // ON AFFICE LE CHEMIN 1
     
@@ -228,8 +228,8 @@ string Carte::suggerer_lieu_rencontre(const Point& membre1, const Point& membre2
     chemin1.clear();
     chemin2.clear();
     
-    calculer_chemin(membre1, membre2, chemin1);
+    //calculer_chemin(membre1, membre2, chemin1);
     
-    return "Impossible!";
+    return calculer_chemin(membre1, membre2, chemin1) == numeric_limits<double>::infinity() ? "Impossible" : "";
 }
 
