@@ -1,7 +1,10 @@
 /*  INF3105 - Structures de données et algorithmes
  UQAM | Faculté des sciences | Département d'informatique
  Automne 2016 | TP3
- http://ericbeaudry.ca/INF3105/tp3/ -- beaudry.eric@uqam.ca    */
+ http://ericbeaudry.ca/INF3105/tp3/ -- beaudry.eric@uqam.ca
+ Auteur: Philippe Landry
+ LANP28096606
+*/
 #include <cassert>
 #include <cmath>
 #include <iomanip>
@@ -58,7 +61,7 @@ int main(int argc, const char** argv){
     // Gardez cette ligne pour avoir le bon nombre de chiffres de précision pour l'affichage des coordonnées
     std::cout << std::setprecision(8);
     if( argc == 4 ){
-        carte.trace();
+        
         ifstream isrequetes(argv[3]);
         if(isrequetes.fail()){
             cerr << "Erreur d'ouverture du fichier requetes: '" << argv[3] << "' !" << endl;

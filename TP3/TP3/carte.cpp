@@ -1,18 +1,17 @@
 /*  INF3105 - Structures de données et algorithmes
     UQAM | Faculté des sciences | Département d'informatique
     Automne 2016 | TP3
-    http://ericbeaudry.ca/INF3105/tp3/ -- beaudry.eric@uqam.ca    */
+    http://ericbeaudry.ca/INF3105/tp3/ -- beaudry.eric@uqam.ca
+    Auteur: Philippe Landry
+    LANP28096606
+ 
+ */
 #include <limits>
 #include "carte.h"
 #include <queue>
 #include <stack>
 #include <cmath>
 
-void Carte::trace() const {
-    
-   
-    
-}
 void Carte::ajouter_noeud(long osmid, const Point& p){
     
     noeuds[ osmid ] = Noeud(osmid, p);
@@ -22,8 +21,6 @@ void Carte::ajouter_route(const string& nom, const list<long>& n){
     
     if( n.size() == 0 ) return;
    
-    // ON SAUVE LA ROUTE AVEC SON NOM POUR L'AFFICHER À LA FIN
-    routes[nom] = n;
     
     // ON CRÉE LES ARÊTES
     std::list<long>::const_iterator itr_src = n.begin();
@@ -35,12 +32,12 @@ void Carte::ajouter_route(const string& nom, const list<long>& n){
         Noeud& dest = noeuds[*itr_dest];
         Noeud::Arete arete1;
         arete1.dest = &dest;
-        arete1.poids = source.p.distance(arete1.dest->p);
+        arete1.poids = source.position.distance(arete1.dest->position);
         source.aretes.push_back(arete1);
 
         Noeud::Arete arete2;
         arete2.dest = &source;
-        arete2.poids = dest.p.distance(arete2.dest->p);
+        arete2.poids = dest.position.distance(arete2.dest->position);
         dest.aretes.push_back(arete2);
 
         
@@ -118,18 +115,23 @@ Carte::dijsktra(long source) const{
     
     return distances;
 }
+
+
 void Carte::ajouter_cafe(const string& nom, const Point& p){
+    
+    
     // ON CHERCHE LE NOEUDS LE PLUS PRET DU CAFÉ
     double min =  std::numeric_limits<double>::infinity();
     long noeud(-1);
     for( std::map<long, Noeud>::const_iterator it = this->noeuds.begin(); it != this->noeuds.end(); it++ ){
-        double d = it->second.p.distance(p);
+        double d = it->second.position.distance(p);
         if( d < min ){
             min = d;
             noeud = it->second.osmid;
         }
     }
     
+    // ON SAUVE LE CAFÉ DANS UNE LISTE
     Cafe cafe;
     cafe.osmid = noeud;
     cafe.p = p;
@@ -153,12 +155,12 @@ string Carte::suggerer_lieu_rencontre(const Point& membre1, const Point& membre2
     long noeud2(-1);
     
     for( std::map<long, Noeud>::const_iterator it = this->noeuds.begin(); it != this->noeuds.end(); it++ ){
-        double dist1 = it->second.p.distance(membre1);
+        double dist1 = it->second.position.distance(membre1);
         if( dist1 < min1 ){
             min1 = dist1;
             noeud1 = it->second.osmid;
         }
-        double dist2 = it->second.p.distance(membre2);
+        double dist2 = it->second.position.distance(membre2);
         if( dist2 < min2 ){
             min2 = dist2;
             noeud2 = it->second.osmid;
@@ -193,12 +195,13 @@ string Carte::suggerer_lieu_rencontre(const Point& membre1, const Point& membre2
     
     
     // ON AFFICHE LES DISTANCES
-    d1 = round(distances1[result.osmid].distance + min1 + result.p.distance(noeuds.at(result.osmid).p));
-    d2 = round(distances2[result.osmid].distance + min2 + result.p.distance(noeuds.at(result.osmid).p));
+    d1 = round(distances1[result.osmid].distance + min1 + result.p.distance(noeuds.at(result.osmid).position));
+    d2 = round(distances2[result.osmid].distance + min2 + result.p.distance(noeuds.at(result.osmid).position));
     
     
     
     
+    // ON EMPILE LE CHEMIN1 À REBOURD EN PARTANT DU CAFÉ
     std::stack<long> stack1;
     stack1.push(result.osmid);
     DijsktraResult noeud = distances1[result.osmid];
@@ -209,14 +212,16 @@ string Carte::suggerer_lieu_rencontre(const Point& membre1, const Point& membre2
         stack1.push(noeud.parent);
         parent = noeud.parent;
     }
+    
+    // ON DÉPILE LE CHEMIN 1
     while( !stack1.empty()){
         long top = stack1.top();
-        chemin1.push_back(noeuds.at(top).p);
+        chemin1.push_back(noeuds.at(top).position);
         stack1.pop();
     }
     
     
-    
+    // ON EMPILE LE CHEMIN2 À REBOURD EN PARTANT DU CAFÉ
     std::stack<long> stack2;
     stack2.push(result.osmid);
     noeud = distances2[result.osmid];
@@ -227,13 +232,19 @@ string Carte::suggerer_lieu_rencontre(const Point& membre1, const Point& membre2
         stack2.push(noeud.parent);
         parent = noeud.parent;
     }
+    
+    // ON DÉPILE LE CHEMIN 2
     while( !stack2.empty()){
         long top = stack2.top();
-        chemin2.push_back(noeuds.at(top).p);
+        chemin2.push_back(noeuds.at(top).position);
         stack2.pop();
     }
+    
+    // NE PAS OUBLIER LE DERNIER SEGMENT VERS LE CAFÉ
     chemin1.push_back(result.p);
     chemin2.push_back(result.p);
-    return result.nom;// == numeric_limits<double>::infinity() ? "Impossible" : "";
+    
+    // ON RETOURNE
+    return (d1 != numeric_limits<double>::infinity() && d2 != numeric_limits<double>::infinity()) ? result.nom :  "Impossible";
 }
 

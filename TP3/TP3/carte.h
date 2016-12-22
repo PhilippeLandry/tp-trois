@@ -1,7 +1,11 @@
 /*  INF3105 - Structures de données et algorithmes
     UQAM | Faculté des sciences | Département d'informatique
     Automne 2016 | TP3
-    http://ericbeaudry.ca/INF3105/tp3/ -- beaudry.eric@uqam.ca    */
+    http://ericbeaudry.ca/INF3105/tp3/ -- beaudry.eric@uqam.ca 
+    Auteur: Philippe Landry
+    LANP28096606
+
+ */
 #if !defined(__CARTE_H__)
 #define __CARTE_H__
 
@@ -16,16 +20,18 @@ using namespace std;
 
 class Carte{
     
+    // Un noeud dans le graphe
     class Noeud {
     public:
+        
         Noeud(){};
-        Noeud( const Noeud& noeud): osmid(noeud.osmid) , p(noeud.p){}
-        Noeud& operator = (const Noeud& noeud){ osmid = noeud.osmid; p = noeud.p; return *this; }
-        Noeud( const long& osmid , const Point& p): osmid(osmid) , p(p){}
+        Noeud( const Noeud& noeud): osmid(noeud.osmid) , position(noeud.position){}
+        Noeud& operator = (const Noeud& noeud){ osmid = noeud.osmid; position = noeud.position; return *this; }
+        Noeud( const long& osmid , const Point& p): osmid(osmid) , position(p){}
+
         
         long osmid;
-        Point p;
-        
+        Point position;
         struct Arete {
             Noeud* dest;
             double poids;
@@ -35,7 +41,7 @@ class Carte{
         
     };
   public:
-    void trace() const;
+    
     void ajouter_noeud(long osmid, const Point& p);
     void ajouter_route(const string& nom, const list<long>& noeuds);
     void ajouter_cafe(const string& nom, const Point& p);
@@ -50,11 +56,10 @@ class Carte{
         DijsktraResult& operator = (const DijsktraResult& source){ parent = source.parent; distance = source.distance; return *this; }
     };
     map<long, DijsktraResult> dijsktra( long source ) const;
-  private:
-   
-    
+
+private:
     map<long, Noeud> noeuds;
-    map<string, list<long> > routes;
+    
     
     struct Cafe {
         long osmid;
