@@ -10,18 +10,7 @@
 #include <limits>
 #include "carte.h"
 #include <map>
-/*
- //  DIJKSTRA mLog(n) mais avec priority_queue<X>, ça donne mLog(m)
- class X {
- string nom_parent
- ;
- double distance;
- operator <(...) // attention: distances négatives,
- // Aussi: aulieu de réduire la clef, inserer
- }
- 
- */
-#include <thread>
+
 using namespace std;
 
 

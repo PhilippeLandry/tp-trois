@@ -39,8 +39,6 @@ class Carte{
     void ajouter_noeud(long osmid, const Point& p);
     void ajouter_route(const string& nom, const list<long>& noeuds);
     void ajouter_cafe(const string& nom, const Point& p);
-
-    double calculer_chemin(const Point& a, const Point& b, list<Point>& chemin) const;
     string suggerer_lieu_rencontre(const Point& membre1, const Point& membre2, double& d1, double& d2, list<Point>& chemin1, list<Point>& chemin2) const;
 
     struct DijsktraResult {
@@ -56,7 +54,7 @@ class Carte{
    
     
     map<long, Noeud> noeuds;
-    map<string, list<long>> routes;
+    map<string, list<long> > routes;
     list<long> cafes;
   friend istream& operator >> (istream& is, Carte& carte);
 };

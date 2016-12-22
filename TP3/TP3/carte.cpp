@@ -132,97 +132,7 @@ void Carte::ajouter_cafe(const string& nom, const Point& p){
     
 }
 
-double Carte::calculer_chemin(const Point& a, const Point& b, list<Point>& chemin) const{
-    
-    // ON CHERCHE LES DEUX NOEUDS LES PLUS PRETS DE CHAQUE AMOUREUX
-    double min1 =  std::numeric_limits<double>::infinity();
-    double min2 =  std::numeric_limits<double>::infinity();
-    long noeud1(-1);
-    long noeud2(-1);
-    
-    for( std::map<long, Noeud>::const_iterator it = this->noeuds.begin(); it != this->noeuds.end(); it++ ){
-        double d1 = it->second.p.distance(a);
-        if( d1 < min1 ){
-            min1 = d1;
-            noeud1 = it->second.osmid;
-        }
-        double d2 = it->second.p.distance(b);
-        if( d2 < min2 ){
-            min2 = d2;
-            noeud2 = it->second.osmid;
-        }
-    }
-    
-    // ON CALCULE DIJSKTRA POUR LE PREMIER NOEUD
-    map<long, Carte::DijsktraResult> distances1 = dijsktra( noeud1 );
-    
-    // ON CALCULE DIJSTRA POUR LE SECOND NOEUD
-    map<long, Carte::DijsktraResult> distances2 = dijsktra( noeud2 );
-    
-    // ON CHERCHE LE CHEMIN DE COÛT MINIMUM
-    list<long>::const_iterator itr;
-    double distance = numeric_limits<double>::infinity();
-    long result = -1;
-    for( itr = cafes.begin(); itr != cafes.end(); itr++ ){
-        long cafe = *itr;
-        
-        double d1 = distances1[cafe].distance;
-        double d2 = distances2[cafe].distance;
-        double d = max( d1 , d2);
-        if( d < distance ){
-            //if( distance == 0 ){ continue; }
-            distance = d;
-            result = cafe;
-        }
-        
-    }
-    
-    
-    // ON AFFICHE LE NOM DU CAFÉ
-    cout <<  noeuds.at(result).nom << endl;
-    
-    // ON AFFICHE LES DISTANCES
-    cout << round(distances1[result].distance + min1) << "m " << round(distances2[result].distance + min2) << "m " << endl;
-    
-    // ON AFFICE LE CHEMIN 1
-    
-    std::stack<long> chemin1;
-    chemin1.push(result);
-    DijsktraResult noeud = distances1[result];
-    long parent = noeud.parent;
-    while(true ) {
-        noeud = distances1[parent];
-        if( noeud.parent == -1 ){ break; }
-        chemin1.push(noeud.parent);
-        parent = noeud.parent;
-    }
-    while( !chemin1.empty()){
-        long top = chemin1.top();
-        cout << noeuds.at(top).p << " ";
-        chemin1.pop();
-    }
-    cout << endl;
-    
-    
-    std::stack<long> chemin2;
-    chemin2.push(result);
-    noeud = distances2[result];
-    parent = noeud.parent;
-    while(true ) {
-        noeud = distances2[parent];
-        if( noeud.parent == -1 ){ break; }
-        chemin2.push(noeud.parent);
-        parent = noeud.parent;
-    }
-    while( !chemin2.empty()){
-        long top = chemin2.top();
-        cout << noeuds.at(top).p << " ";
-        chemin2.pop();
-    }
-    cout << endl;
-    
-    return distance;
-}
+
 
 string Carte::suggerer_lieu_rencontre(const Point& membre1, const Point& membre2, double& d1, double& d2, list<Point>& chemin1, list<Point>& chemin2) const{
     // À coder.
@@ -237,14 +147,14 @@ string Carte::suggerer_lieu_rencontre(const Point& membre1, const Point& membre2
     long noeud2(-1);
     
     for( std::map<long, Noeud>::const_iterator it = this->noeuds.begin(); it != this->noeuds.end(); it++ ){
-        double d1 = it->second.p.distance(membre1);
-        if( d1 < min1 ){
-            min1 = d1;
+        double dist1 = it->second.p.distance(membre1);
+        if( dist1 < min1 ){
+            min1 = dist1;
             noeud1 = it->second.osmid;
         }
-        double d2 = it->second.p.distance(membre2);
-        if( d2 < min2 ){
-            min2 = d2;
+        double dist2 = it->second.p.distance(membre2);
+        if( dist2 < min2 ){
+            min2 = dist2;
             noeud2 = it->second.osmid;
         }
     }
@@ -262,9 +172,9 @@ string Carte::suggerer_lieu_rencontre(const Point& membre1, const Point& membre2
     for( itr = cafes.begin(); itr != cafes.end(); itr++ ){
         long cafe = *itr;
         
-        double d1 = distances1[cafe].distance;
-        double d2 = distances2[cafe].distance;
-        double d = max( d1 , d2);
+        double dist1 = distances1[cafe].distance;
+        double dist2 = distances2[cafe].distance;
+        double d = max( dist1 , dist2);
         if( d < distance ){
             //if( distance == 0 ){ continue; }
             distance = d;
@@ -277,8 +187,8 @@ string Carte::suggerer_lieu_rencontre(const Point& membre1, const Point& membre2
     
     
     // ON AFFICHE LES DISTANCES
-    d1 = round(distances1[result].distance);
-    d2 = round(distances2[result].distance);
+    d1 = round(distances1[result].distance + min1);
+    d2 = round(distances2[result].distance + min2);
     
     
     
