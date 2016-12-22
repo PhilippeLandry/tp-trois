@@ -279,6 +279,7 @@ string Carte::suggerer_lieu_rencontre(const Point& membre1, const Point& membre2
     d2 = round(distances2[result].distance);
     
     
+    
     std::stack<long> stack1;
     stack1.push(result);
     DijsktraResult noeud = distances1[result];
