@@ -6,7 +6,7 @@
 #include "carte.h"
 #include <queue>
 #include <stack>
-
+#include <cmath>
 void Carte::ajouter_noeud(long osmid, const Point& p){
     
     noeuds[ osmid ] = Noeud(osmid, p);
@@ -45,7 +45,7 @@ void Carte::ajouter_route(const string& nom, const list<long>& n){
     
 }
 
-unordered_map<long, Carte::DijsktraResult>
+map<long, Carte::DijsktraResult>
 Carte::dijsktra(long source) const{
     
     // L'object qui sera placé dans le monceau de Dijsktra
@@ -72,14 +72,14 @@ Carte::dijsktra(long source) const{
 
     
     // ON CRÉER UNE TABLE QUI CONTIENT LE PARENT IMMÉDIAT DE CHAQUE CHEMIN
-    unordered_map<long, long> parents;
+    map<long, long> parents;
 
     
     // ON CRÉE UNE TABLE QUI CONTIENT LES DISTANCES DE TOUS LES NOEUDS DE LA SOURCE
-    unordered_map<long, DijsktraResult> distances;
+    map<long, DijsktraResult> distances;
     
     // ON INITIALISE LES DISTANCES À L'INFINI
-    unordered_map<long, Noeud>::const_iterator itr;
+    map<long, Noeud>::const_iterator itr;
     for( itr = noeuds.begin(); itr != noeuds.end(); itr++){
         distances[itr->first] = DijsktraResult( -1, std::numeric_limits<double>::infinity());
     }
@@ -116,7 +116,7 @@ void Carte::ajouter_cafe(const string& nom, const Point& p){
     // ON CHERCHE LE NOEUDS LE PLUS PRET DU CAFÉ
     double min =  std::numeric_limits<double>::infinity();
     long noeud;
-    for( std::unordered_map<long, Noeud>::const_iterator it = this->noeuds.begin(); it != this->noeuds.end(); it++ ){
+    for( std::map<long, Noeud>::const_iterator it = this->noeuds.begin(); it != this->noeuds.end(); it++ ){
         double d = it->second.p.distance(p);
         if( d < min ){
             min = d;
@@ -138,7 +138,7 @@ double Carte::calculer_chemin(const Point& a, const Point& b, list<Point>& chemi
     long noeud1(-1);
     long noeud2(-1);
     
-    for( std::unordered_map<long, Noeud>::const_iterator it = this->noeuds.begin(); it != this->noeuds.end(); it++ ){
+    for( std::map<long, Noeud>::const_iterator it = this->noeuds.begin(); it != this->noeuds.end(); it++ ){
         double d1 = it->second.p.distance(a);
         if( d1 < min1 ){
             min1 = d1;
@@ -152,10 +152,10 @@ double Carte::calculer_chemin(const Point& a, const Point& b, list<Point>& chemi
     }
     
     // ON CALCULE DIJSKTRA POUR LE PREMIER NOEUD
-    unordered_map<long, Carte::DijsktraResult> distances1 = dijsktra( noeud1 );
+    map<long, Carte::DijsktraResult> distances1 = dijsktra( noeud1 );
     
     // ON CALCULE DIJSTRA POUR LE SECOND NOEUD
-    unordered_map<long, Carte::DijsktraResult> distances2 = dijsktra( noeud2 );
+    map<long, Carte::DijsktraResult> distances2 = dijsktra( noeud2 );
     
     // ON CHERCHE LE CHEMIN DE COÛT MINIMUM
     list<long>::const_iterator itr;
@@ -234,7 +234,7 @@ string Carte::suggerer_lieu_rencontre(const Point& membre1, const Point& membre2
     long noeud1(-1);
     long noeud2(-1);
     
-    for( std::unordered_map<long, Noeud>::const_iterator it = this->noeuds.begin(); it != this->noeuds.end(); it++ ){
+    for( std::map<long, Noeud>::const_iterator it = this->noeuds.begin(); it != this->noeuds.end(); it++ ){
         double d1 = it->second.p.distance(membre1);
         if( d1 < min1 ){
             min1 = d1;
@@ -248,10 +248,10 @@ string Carte::suggerer_lieu_rencontre(const Point& membre1, const Point& membre2
     }
     
     // ON CALCULE DIJSKTRA POUR LE PREMIER NOEUD
-    unordered_map<long, Carte::DijsktraResult> distances1 = dijsktra( noeud1 );
+    map<long, Carte::DijsktraResult> distances1 = dijsktra( noeud1 );
     
     // ON CALCULE DIJSTRA POUR LE SECOND NOEUD
-    unordered_map<long, Carte::DijsktraResult> distances2 = dijsktra( noeud2 );
+    map<long, Carte::DijsktraResult> distances2 = dijsktra( noeud2 );
     
     // ON CHERCHE LE CHEMIN DE COÛT MINIMUM
     list<long>::const_iterator itr;

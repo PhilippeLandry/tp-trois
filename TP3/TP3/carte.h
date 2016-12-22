@@ -8,7 +8,7 @@
 #include <istream>
 #include <list>
 #include <map>
-#include <unordered_map>
+#include <map>
 #include <vector>
 #include <string>
 #include "point.h"
@@ -51,12 +51,12 @@ class Carte{
         DijsktraResult(){}
         DijsktraResult& operator = (const DijsktraResult& source){ parent = source.parent; distance = source.distance; return *this; }
     };
-    unordered_map<long, DijsktraResult> dijsktra( long source ) const;
+    map<long, DijsktraResult> dijsktra( long source ) const;
   private:
    
     
-    unordered_map<long, Noeud> noeuds;
-    unordered_map<string, list<long>> routes;
+    map<long, Noeud> noeuds;
+    map<string, list<long>> routes;
     list<long> cafes;
   friend istream& operator >> (istream& is, Carte& carte);
 };
