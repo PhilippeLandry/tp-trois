@@ -31,11 +31,11 @@ class Carte{
             double poids;
         };
         list<Arete> aretes;
-        bool iscafe;
-        string nom;
+
         
     };
   public:
+    void trace() const;
     void ajouter_noeud(long osmid, const Point& p);
     void ajouter_route(const string& nom, const list<long>& noeuds);
     void ajouter_cafe(const string& nom, const Point& p);
@@ -55,7 +55,13 @@ class Carte{
     
     map<long, Noeud> noeuds;
     map<string, list<long> > routes;
-    list<long> cafes;
+    
+    struct Cafe {
+        long osmid;
+        Point p;
+        string nom;
+    };
+    list<Cafe> cafes;
   friend istream& operator >> (istream& is, Carte& carte);
 };
 

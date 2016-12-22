@@ -58,6 +58,7 @@ int main(int argc, const char** argv){
     // Gardez cette ligne pour avoir le bon nombre de chiffres de précision pour l'affichage des coordonnées
     std::cout << std::setprecision(8);
     if( argc == 4 ){
+        carte.trace();
         ifstream isrequetes(argv[3]);
         if(isrequetes.fail()){
             cerr << "Erreur d'ouverture du fichier requetes: '" << argv[3] << "' !" << endl;

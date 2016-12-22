@@ -7,6 +7,12 @@
 #include <queue>
 #include <stack>
 #include <cmath>
+
+void Carte::trace() const {
+    
+   
+    
+}
 void Carte::ajouter_noeud(long osmid, const Point& p){
     
     noeuds[ osmid ] = Noeud(osmid, p);
@@ -15,7 +21,7 @@ void Carte::ajouter_noeud(long osmid, const Point& p){
 void Carte::ajouter_route(const string& nom, const list<long>& n){
     
     if( n.size() == 0 ) return;
-    
+   
     // ON SAUVE LA ROUTE AVEC SON NOM POUR L'AFFICHER À LA FIN
     routes[nom] = n;
     
@@ -58,7 +64,7 @@ public:
 private:
     long noeud;
     double distance;
-    long parent;
+    
     
     
 };
@@ -73,8 +79,6 @@ Carte::dijsktra(long source) const{
     monceau.push(Element(0,source));
 
     
-    // ON CRÉER UNE TABLE QUI CONTIENT LE PARENT IMMÉDIAT DE CHAQUE CHEMIN
-    map<long, long> parents;
 
     
     // ON CRÉE UNE TABLE QUI CONTIENT LES DISTANCES DE TOUS LES NOEUDS DE LA SOURCE
@@ -88,7 +92,7 @@ Carte::dijsktra(long source) const{
     
     // ON INITIALISE LA DISTANCE DE LA SOURCE À L'INFINI
     distances[source] = DijsktraResult( -1, 0);
-    parents[source] = -1;
+    
     
     
     // ON VIDE LE MONCEAU DE DISTANCES
@@ -117,7 +121,7 @@ Carte::dijsktra(long source) const{
 void Carte::ajouter_cafe(const string& nom, const Point& p){
     // ON CHERCHE LE NOEUDS LE PLUS PRET DU CAFÉ
     double min =  std::numeric_limits<double>::infinity();
-    long noeud;
+    long noeud(-1);
     for( std::map<long, Noeud>::const_iterator it = this->noeuds.begin(); it != this->noeuds.end(); it++ ){
         double d = it->second.p.distance(p);
         if( d < min ){
@@ -126,9 +130,11 @@ void Carte::ajouter_cafe(const string& nom, const Point& p){
         }
     }
     
-    noeuds[noeud].iscafe = true;
-    noeuds[noeud].nom = nom;
-    cafes.push_back(noeud);
+    Cafe cafe;
+    cafe.osmid = noeud;
+    cafe.p = p;
+    cafe.nom = nom;
+    cafes.push_back(cafe);
     
 }
 
@@ -166,14 +172,14 @@ string Carte::suggerer_lieu_rencontre(const Point& membre1, const Point& membre2
     map<long, Carte::DijsktraResult> distances2 = dijsktra( noeud2 );
     
     // ON CHERCHE LE CHEMIN DE COÛT MINIMUM
-    list<long>::const_iterator itr;
+    list<Cafe>::const_iterator itr;
     double distance = numeric_limits<double>::infinity();
-    long result = -1;
+    Cafe result;
     for( itr = cafes.begin(); itr != cafes.end(); itr++ ){
-        long cafe = *itr;
+        Cafe cafe = *itr;
         
-        double dist1 = distances1[cafe].distance;
-        double dist2 = distances2[cafe].distance;
+        double dist1 = distances1[cafe.osmid].distance;
+        double dist2 = distances2[cafe.osmid].distance;
         double d = max( dist1 , dist2);
         if( d < distance ){
             //if( distance == 0 ){ continue; }
@@ -187,15 +193,15 @@ string Carte::suggerer_lieu_rencontre(const Point& membre1, const Point& membre2
     
     
     // ON AFFICHE LES DISTANCES
-    d1 = round(distances1[result].distance + min1);
-    d2 = round(distances2[result].distance + min2);
+    d1 = round(distances1[result.osmid].distance + min1 + result.p.distance(noeuds.at(result.osmid).p));
+    d2 = round(distances2[result.osmid].distance + min2 + result.p.distance(noeuds.at(result.osmid).p));
     
     
     
     
     std::stack<long> stack1;
-    stack1.push(result);
-    DijsktraResult noeud = distances1[result];
+    stack1.push(result.osmid);
+    DijsktraResult noeud = distances1[result.osmid];
     long parent = noeud.parent;
     while(true ) {
         noeud = distances1[parent];
@@ -212,8 +218,8 @@ string Carte::suggerer_lieu_rencontre(const Point& membre1, const Point& membre2
     
     
     std::stack<long> stack2;
-    stack2.push(result);
-    noeud = distances2[result];
+    stack2.push(result.osmid);
+    noeud = distances2[result.osmid];
     parent = noeud.parent;
     while(true ) {
         noeud = distances2[parent];
@@ -226,6 +232,8 @@ string Carte::suggerer_lieu_rencontre(const Point& membre1, const Point& membre2
         chemin2.push_back(noeuds.at(top).p);
         stack2.pop();
     }
-    return noeuds.at(result).nom;// == numeric_limits<double>::infinity() ? "Impossible" : "";
+    chemin1.push_back(result.p);
+    chemin2.push_back(result.p);
+    return result.nom;// == numeric_limits<double>::infinity() ? "Impossible" : "";
 }
 
