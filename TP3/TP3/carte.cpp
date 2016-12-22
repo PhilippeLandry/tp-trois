@@ -228,8 +228,90 @@ string Carte::suggerer_lieu_rencontre(const Point& membre1, const Point& membre2
     chemin1.clear();
     chemin2.clear();
     
-    //calculer_chemin(membre1, membre2, chemin1);
+    // ON CHERCHE LES DEUX NOEUDS LES PLUS PRETS DE CHAQUE AMOUREUX
+    double min1 =  std::numeric_limits<double>::infinity();
+    double min2 =  std::numeric_limits<double>::infinity();
+    long noeud1(-1);
+    long noeud2(-1);
     
-    return calculer_chemin(membre1, membre2, chemin1) == numeric_limits<double>::infinity() ? "Impossible" : "";
+    for( std::unordered_map<long, Noeud>::const_iterator it = this->noeuds.begin(); it != this->noeuds.end(); it++ ){
+        double d1 = it->second.p.distance(membre1);
+        if( d1 < min1 ){
+            min1 = d1;
+            noeud1 = it->second.osmid;
+        }
+        double d2 = it->second.p.distance(membre2);
+        if( d2 < min2 ){
+            min2 = d2;
+            noeud2 = it->second.osmid;
+        }
+    }
+    
+    // ON CALCULE DIJSKTRA POUR LE PREMIER NOEUD
+    unordered_map<long, Carte::DijsktraResult> distances1 = dijsktra( noeud1 );
+    
+    // ON CALCULE DIJSTRA POUR LE SECOND NOEUD
+    unordered_map<long, Carte::DijsktraResult> distances2 = dijsktra( noeud2 );
+    
+    // ON CHERCHE LE CHEMIN DE COÛT MINIMUM
+    list<long>::const_iterator itr;
+    double distance = numeric_limits<double>::infinity();
+    long result = -1;
+    for( itr = cafes.begin(); itr != cafes.end(); itr++ ){
+        long cafe = *itr;
+        
+        double d1 = distances1[cafe].distance;
+        double d2 = distances2[cafe].distance;
+        double d = max( d1 , d2);
+        if( d < distance ){
+            //if( distance == 0 ){ continue; }
+            distance = d;
+            result = cafe;
+        }
+        
+    }
+    
+    
+    
+    
+    // ON AFFICHE LES DISTANCES
+    d1 = round(distances1[result].distance + min1);
+    d2 = round(distances2[result].distance + min2);
+    
+    
+    std::stack<long> stack1;
+    stack1.push(result);
+    DijsktraResult noeud = distances1[result];
+    long parent = noeud.parent;
+    while(true ) {
+        noeud = distances1[parent];
+        if( noeud.parent == -1 ){ break; }
+        stack1.push(noeud.parent);
+        parent = noeud.parent;
+    }
+    while( !stack1.empty()){
+        long top = stack1.top();
+        chemin1.push_back(noeuds.at(top).p);
+        stack1.pop();
+    }
+    
+    
+    
+    std::stack<long> stack2;
+    stack2.push(result);
+    noeud = distances2[result];
+    parent = noeud.parent;
+    while(true ) {
+        noeud = distances2[parent];
+        if( noeud.parent == -1 ){ break; }
+        stack2.push(noeud.parent);
+        parent = noeud.parent;
+    }
+    while( !stack2.empty()){
+        long top = stack2.top();
+        chemin2.push_back(noeuds.at(top).p);
+        stack2.pop();
+    }
+    return noeuds.at(result).nom;// == numeric_limits<double>::infinity() ? "Impossible" : "";
 }
 
