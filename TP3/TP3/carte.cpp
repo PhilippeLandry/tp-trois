@@ -275,8 +275,8 @@ string Carte::suggerer_lieu_rencontre(const Point& membre1, const Point& membre2
     
     
     // ON AFFICHE LES DISTANCES
-    d1 = round(distances1[result].distance + min1);
-    d2 = round(distances2[result].distance + min2);
+    d1 = round(distances1[result].distance);
+    d2 = round(distances2[result].distance);
     
     
     std::stack<long> stack1;
